@@ -1,4 +1,5 @@
-﻿using Business.Case.Raizen.Api.Entities;
+﻿using Business.Case.Raizen.Api.Application.Dtos;
+using Business.Case.Raizen.Api.Entities;
 using Business.Case.Raizen.Api.Infra.Base;
 using Business.Case.Raizen.Api.Infra.Context;
 using Dapper;

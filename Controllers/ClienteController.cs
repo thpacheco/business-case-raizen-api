@@ -24,7 +24,7 @@ namespace Business.Case.Raizen.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            return Ok(ResponseBase.CreateSuccess(await _clienteService.GetByIdAsyncs(id)));
+            return Ok(ResponseBase.CreateSuccess(await _clienteService.GetByIdAsync(id)));
         }
 
         [HttpPost]
@@ -45,7 +45,7 @@ namespace Business.Case.Raizen.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmailClienteAsync(int id, [FromBody] ClienteDto clienteDto)
+        public async Task<IActionResult> UpdateClienteAsync(int id, [FromBody] ClienteDto clienteDto)
         {
             try
             {
@@ -74,6 +74,11 @@ namespace Business.Case.Raizen.Api.Controllers
             {
                 return BadRequest(ResponseBase.CreateError(ex.Message));
             }
+        }
+        [HttpGet("cep/{cep}")]
+        public async Task<IActionResult> GetCepAsync(string cep)
+        {
+            return Ok(ResponseBase.CreateSuccess(await _clienteService.GetCepAsync(cep)));
         }
     }
 }

@@ -3,6 +3,8 @@ using Business.Case.Raizen.Api.Application.Dtos;
 using Business.Case.Raizen.Api.Domain.Interfaces;
 using Business.Case.Raizen.Api.Entities;
 using Business.Case.Raizen.APi.Infra.Repositories;
+using static Dapper.SqlMapper;
+using Newtonsoft.Json;
 
 
 namespace Business.Case.Raizen.Api.Infra.Services
@@ -18,7 +20,44 @@ namespace Business.Case.Raizen.Api.Infra.Services
         }
 
         public async Task<IEnumerable<Cliente>> GetAllAsync() => await _ClienteRepository.GetAll();
-        public async Task<Cliente> GetByIdAsyncs(int id) => await _ClienteRepository.GetById(id);
+        public async Task<Cliente> GetByIdAsync(int id) => await _ClienteRepository.GetById(id);
+        public async Task<ClienteCepDto> GetCepAsync(string cep)
+        {
+            string apiUrl = $"https://viacep.com.br/ws/{cep}/json/";
+            var clienteCep = new ClienteCepDto();
+            using (HttpClient httpClient = new HttpClient())
+            {
+                try
+                {
+                    // Fazer a chamada GET para o endpoint
+                    HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                    // Verificar se a chamada foi bem-sucedida (código 200)
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Ler e imprimir os dados da resposta
+                        string contentStream = await response.Content.ReadAsStringAsync();
+                        clienteCep = JsonConvert.DeserializeObject<ClienteCepDto>(contentStream);
+
+                        return clienteCep;
+                    }
+                    else
+                    {
+                        // Tratar o erro, se necessário
+                        Console.WriteLine($"Erro: {response.StatusCode} - {response.ReasonPhrase}");
+                        return new ClienteCepDto();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Lidar com exceções, se ocorrerem
+                    Console.WriteLine($"Erro: {ex.Message}");
+                }
+            }
+
+            return clienteCep;
+        }
+
         public async Task<int> InsertClienteAsync(ClienteDto clienteDto)
         {
             var cliente = _mapper.Map<Cliente>(clienteDto);
